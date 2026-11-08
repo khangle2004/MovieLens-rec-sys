@@ -1,0 +1,26 @@
+[
+  {
+    "Split": "Train",
+    "Original": 800164,
+    "Positive (>=4)": 463017,
+    "Removed": 337147,
+    "Retained (%)": 57.87,
+    "Removed (%)": 42.13
+  },
+  {
+    "Split": "Validation",
+    "Original": 100024,
+    "Positive (>=4)": 57812,
+    "Removed": 42212,
+    "Retained (%)": 57.8,
+    "Removed (%)": 42.2
+  },
+  {
+    "Split": "Test",
+    "Original": 100021,
+    "Positive (>=4)": 54452,
+    "Removed": 45569,
+    "Retained (%)": 54.44,
+    "Removed (%)": 45.56
+  }
+]

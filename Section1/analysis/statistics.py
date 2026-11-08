@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from analysis.plotting import save_figure
+from analysis.results import write_json
 
 
 def plot_long_tail(interactions, item_name, ranking_label, filename):
@@ -73,6 +74,35 @@ def explore_ratings(ratings):
         .resample('D')
         .size()
     )
+    write_json('explore_ratings.json', {
+        'dataset': {
+            'users': int(user_count),
+            'movies': int(movie_count),
+            'ratings': int(rating_count),
+            'density': float(density),
+            'sparsity': float(1 - density),
+        },
+        'user_interactions': {
+            key: float(value)
+            for key, value in user_interactions.describe().items()
+        },
+        'movie_interactions': {
+            key: float(value)
+            for key, value in movie_interactions.describe().items()
+        },
+        'rating_distribution': {
+            str(int(rating)): int(count)
+            for rating, count in rating_distribution.items()
+        },
+        'time_span': {
+            'start': ratings['datetime'].min().isoformat(),
+            'end': ratings['datetime'].max().isoformat(),
+        },
+        'daily_activity': {
+            day.strftime('%Y-%m-%d'): int(count)
+            for day, count in daily_activity.items()
+        },
+    })
     daily_activity.plot(figsize=(10, 5))
     plt.xlabel('Time')
     plt.ylabel('Number of Ratings')

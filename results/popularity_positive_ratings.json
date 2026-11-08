@@ -1,0 +1,9 @@
+{
+  "model": "POPULARITY (POSITIVE RATINGS)",
+  "metrics": {
+    "Precision@10": 0.24097914777878515,
+    "Recall@10": 0.06073490725413098,
+    "NDCG@10": 0.260402544966431,
+    "Coverage": 0.03264975715056665
+  }
+}

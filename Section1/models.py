@@ -169,51 +169,40 @@ def recommend_knn(
     n=10
 ):
 
-    user_history = train[
-        train['user_id'] == user_id
-    ]
+    watched = set(
+        train[
+            train['user_id'] == user_id
+        ]['movie_id']
+    )
 
-    if user_history.empty:
+    if len(watched) == 0:
 
         return []
 
-    user_ratings = user_history.set_index('movie_id')['rating']
-    user_mean = user_ratings.mean()
     scores = {}
 
-    for candidate in similarity_matrix.index:
+    for movie in watched:
 
-        if candidate in user_ratings.index:
+        if movie not in similarity_matrix.columns:
 
             continue
-
-        similarities = (
-            similarity_matrix.loc[candidate]
-            .reindex(user_ratings.index)
-            .dropna()
-        )
 
         neighbors = (
-            similarities
+            similarity_matrix[movie]
             .sort_values(ascending=False)
-            .head(k)
+            .iloc[1:k+1]
         )
 
-        similarity_weight = neighbors.abs().sum()
+        for neighbor, sim in neighbors.items():
 
-        if similarity_weight == 0:
+            if neighbor in watched:
 
-            continue
+                continue
 
-        rating_deviations = (
-            user_ratings.reindex(neighbors.index)
-            - user_mean
-        )
-        scores[candidate] = (
-            user_mean
-            + (neighbors * rating_deviations).sum()
-            / similarity_weight
-        )
+            scores[neighbor] = (
+                scores.get(neighbor, 0)
+                + sim
+            )
 
     ranked = sorted(
         scores.items(),

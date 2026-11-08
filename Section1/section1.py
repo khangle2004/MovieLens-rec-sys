@@ -10,12 +10,11 @@ ROOT = os.path.abspath(
 sys.path.append(ROOT)
 
 from datasets import dataset_processing
-from analysis import explore_ratings, save_figure
+from analysis import explore_ratings, save_figure, write_json
 from models import (
     build_adjusted_cosine_similarity,
     build_cosine_similarity,
     build_jaccard_similarity,
-    build_pearson_similarity,
     build_popularity_all,
     build_popularity_positive,
     build_user_item_matrix,
@@ -53,6 +52,25 @@ def split_by_time(ratings, daily_activity):
         print(split['datetime'].min())
         print(split['datetime'].max())
         print(len(split))
+
+    write_json('split_by_time.json', {
+        'cutoffs': {
+            'train_before': float(first_cutoff),
+            'validation_before': float(second_cutoff),
+        },
+        'splits': {
+            split_name.lower(): {
+                'ratings': int(len(split)),
+                'first_rating': split['datetime'].min().isoformat(),
+                'last_rating': split['datetime'].max().isoformat(),
+            }
+            for split_name, split in (
+                ('TRAIN', train),
+                ('VALIDATION', validation),
+                ('TEST', test),
+            )
+        },
+    })
 
     axis = daily_activity.plot(figsize=(12, 5))
     train_end = train['datetime'].max()
@@ -99,6 +117,10 @@ def print_positive_feedback_stats(splits):
     print('POSITIVE FEEDBACK FILTERING')
     print('==================================')
     print(stats.round(2))
+    write_json(
+        'positive_feedback_stats.json',
+        stats.round(2).to_dict(orient='records'),
+    )
 
 
 def evaluate_popularity_baseline(
@@ -123,16 +145,26 @@ def evaluate_popularity_baseline(
         total_items,
     )
     print(result)
+    filename = (
+        'popularity_positive_ratings.json'
+        if positive_only
+        else 'popularity_all_ratings.json'
+    )
+    write_json(filename, {
+        'model': name,
+        'metrics': result,
+    })
 
 
 def evaluate_item_knn(train_positive, users, relevant_items, total_items):
     user_item = build_user_item_matrix(train_positive)
     similarities = {
         'Cosine': build_cosine_similarity(user_item),
-        'Pearson': build_pearson_similarity(user_item),
         'Jaccard': build_jaccard_similarity(user_item),
         'Adjusted Cosine': build_adjusted_cosine_similarity(train_positive),
     }
+
+    results = []
 
     for name, similarity_matrix in similarities.items():
         print(f'\n==================================\n{name}\n==================================')
@@ -149,6 +181,13 @@ def evaluate_item_knn(train_positive, users, relevant_items, total_items):
                 total_items,
             )
             print(f'k={k}', result)
+            results.append({
+                'similarity': name,
+                'k': k,
+                'metrics': result,
+            })
+
+    write_json('item_knn.json', results)
 
 
 def main():
