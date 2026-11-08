@@ -9,8 +9,8 @@ Install the required Python packages from the project root:
 python -m pip install -r requirements.txt
 ```
 # Data
-This project uses MovieLens 1M from GroupLens: https://grouplens.org/datasets/movielens/1m/
-The dataset is included in this repository. To download it:
+This project uses MovieLens 1M from GroupLens: https://grouplens.org/datasets/movielens/1m/. 
+The dataset is included in this repository.
 
 # Running the Project
 
