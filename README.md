@@ -26,3 +26,11 @@ All generated figures are saved to:
 ```text
 figures/Section1/
 ```
+
+# Results
+
+Results can be found in folder results
+
+# Report
+
+Report can be found in report/Section1
