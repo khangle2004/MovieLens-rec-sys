@@ -11,7 +11,11 @@ python -m pip install -r requirements.txt
 # Data
 This project uses MovieLens 1M from GroupLens: https://grouplens.org/datasets/movielens/1m/. 
 
-The dataset is included in this repository. It can be found in datasets folder.
+The dataset is included in this repository. It can be found in: 
+
+```text
+datasets
+```
 
 # Running the Project
 
@@ -24,13 +28,21 @@ python run_all.py
 All generated figures are saved to:
 
 ```text
-figures/Section1/
+figures/Section1/ 
 ```
 
 # Results
 
-Results can be found in folder results
+Results can be found in:
+
+```text
+results
+```
 
 # Report
 
-Report can be found in report/Section1
+Report can be found in:
+
+```text
+report/Section1
+```
